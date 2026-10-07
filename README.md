@@ -15,13 +15,25 @@ Which plant-based protein sources offer the best value in Finnish supermarkets, 
 
 ---
 
+## Key findings
+
+- **Dry legumes and soy flour are the clear winners.** Red lentils, green lentils, and soy granules (VegeSun) deliver protein at €1–3 per 100g — 5 to 10× cheaper than processed meat substitutes.
+- **Meat substitutes are expensive per gram of protein.** Most fall in the €6–15 range; some (e.g. Kasvislauantai) exceed €20. You're paying for convenience and texture, not nutrition.
+- **Peanut butter punches above its weight.** At ~€3/100g protein it sits close to dry legumes, and it's ready to eat with no prep. One of the best value-to-effort ratios in the dataset.
+- **Wholegrain bread is a solid everyday contributor.** Not protein-dense enough to compete with legumes, but at €3–4/100g protein and zero cooking required it's a reliable background source.
+- **Nuts cluster in the middle.** Peanuts and peanut butter are outliers on the cheap end; walnuts and cashews are pricier for the protein they provide.
+- **Protein supplements beat everything on pure economics** — but as food they're in a different category from whole products.
+- **Tofu and tempeh are surprisingly mid-range.** Not the cheapest, but competitive once you factor in culinary versatility.
+
+---
+
 ## Data
 
-**Source:** Prices and nutritional values collected manually from Finnish supermarket product pages (primarily [s-kaupat.fi](https://www.s-kaupat.fi)) and product labels.
+**Source:** Prices and nutritional values collected manually from Finnish supermarket product pages (S-kaupat, K-ruoka, Lidl) and product labels.
 
-**Coverage:** 37 products across 9 categories (Legumes, Cereals & granola, Soy products, Meat substitutes, Nuts & seeds, Dairy substitutes, Grains, Bread, Protein supplements).
+**Coverage:** 50+ products across 9 categories (Legumes, Cereals & granola, Soy products, Meat substitutes, Nuts & seeds, Dairy substitutes, Grains, Bread, Protein supplements).
 
-**Caveats:** Prices reflect shelf prices at the time of collection and may vary by store, date, and promotion. Always check the product label for current nutritional values.
+**Caveats:** Prices reflect shelf prices at the time of collection and may vary by store, date, and promotion. Rows without a price were identified but not yet priced. Always check the product label for current nutritional values.
 
 **Licence:** [CC BY 4.0](data/LICENSE) — free to reuse with attribution.
 
@@ -98,9 +110,13 @@ The `price_per_100g_protein` column is recomputed by the script, so it can be le
 
 ## TODO
 
-- [ ] Add `store` and `date_observed` columns to the CSV for data provenance
-- [ ] Show product links in hover tooltips
-- [ ] Add category-level average markers to the chart
+- [x] Add `store` and `date_observed` columns to the CSV for data provenance
+- [x] Show product links in the product table
+- [x] Add category-level average markers to the chart
+- [ ] Fill in missing prices for unpriced rows (K-ruoka, Lidl products)
+- [ ] Improve chart readability: label Pareto-optimal products, size dots by value score, add value frontier line
+- [ ] Add carbs and fat columns to the CSV and explore a multi-macro view (e.g. ternary plot or parallel coordinates)
+- [ ] Expand coverage: more stores (Lidl, K-ruoka own brands), more categories (protein bars, ready meals)
 
 ---
 
