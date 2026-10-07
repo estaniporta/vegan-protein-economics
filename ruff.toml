@@ -1,0 +1,2 @@
+[lint]
+ignore = ["C408"]  # dict() is idiomatic in Plotly; rewriting as literals doesn't improve readability

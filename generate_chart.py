@@ -13,9 +13,10 @@ Output:
 """
 
 import sys
+from pathlib import Path
+
 import pandas as pd
 import plotly.graph_objects as go
-from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Config
@@ -49,11 +50,48 @@ df = pd.read_csv(INPUT_CSV, sep=";")
 # Rename columns to clean internal names
 df.columns = [
     "product", "category", "package_size_g", "protein_in_package_g",
-    "price_per_kg", "protein_per_100g", "price_per_100g_protein_raw", "url"
+    "price_per_kg", "protein_per_100g", "price_per_100g_protein_raw",
+    "store", "date_observed", "url",
 ]
 
 # Drop rows with missing values in key columns
 df = df.dropna(subset=["product", "category", "protein_per_100g", "price_per_kg"])
+
+# --- validation -------------------------------------------------------
+NUMERIC_COLS = ["package_size_g", "protein_in_package_g", "price_per_kg", "protein_per_100g"]
+RANGES = {
+    "protein_per_100g":    (0, 100),
+    "price_per_kg":        (0, 500),
+    "package_size_g":      (1, 10000),
+    "protein_in_package_g": (0, 10000),
+}
+errors = []
+for col in NUMERIC_COLS:
+    non_numeric = df[pd.to_numeric(df[col], errors="coerce").isna() & df[col].notna()]
+    if not non_numeric.empty:
+        errors.append(f"  {col}: non-numeric values in rows: {non_numeric['product'].tolist()}")
+    lo, hi = RANGES[col]
+    df[col] = pd.to_numeric(df[col], errors="coerce")
+    out_of_range = df[(df[col] < lo) | (df[col] > hi)]["product"].tolist()
+    if out_of_range:
+        errors.append(f"  {col}: out of range [{lo}, {hi}] for: {out_of_range}")
+
+# flag rows where protein_per_100g disagrees with protein_in_package_g / package_size_g
+computed = (df["protein_in_package_g"] / df["package_size_g"] * 100).round(1)
+mismatch = df[((computed - df["protein_per_100g"]).abs() > 1) & computed.notna()]
+if not mismatch.empty:
+    for _, row in mismatch.iterrows():
+        errors.append(
+            f"  protein_per_100g mismatch: '{row['product']}' "
+            f"csv={row['protein_per_100g']}, computed={computed[row.name]}"
+        )
+
+if errors:
+    print("WARNING: data quality issues found:")
+    for e in errors:
+        print(e)
+else:
+    print("Validation passed.")
 
 # ---------------------------------------------------------------------------
 # Computed columns
